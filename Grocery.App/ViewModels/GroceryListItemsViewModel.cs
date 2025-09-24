@@ -15,6 +15,22 @@ namespace Grocery.App.ViewModels
         private readonly IGroceryListItemsService _groceryListItemsService;
         private readonly IProductService _productService;
         private readonly IFileSaverService _fileSaverService;
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged();
+                    FilterProducts();
+                }
+            }
+        }
+
+        private List<Product> _allProducts = new();
         
         public ObservableCollection<GroceryListItem> MyGroceryListItems { get; set; } = [];
         public ObservableCollection<Product> AvailableProducts { get; set; } = [];
@@ -41,10 +57,21 @@ namespace Grocery.App.ViewModels
 
         private void GetAvailableProducts()
         {
-            AvailableProducts.Clear();
+            _allProducts.Clear();
             foreach (Product p in _productService.GetAll())
                 if (MyGroceryListItems.FirstOrDefault(g => g.ProductId == p.Id) == null  && p.Stock > 0)
-                    AvailableProducts.Add(p);
+                    _allProducts.Add(p);
+            FilterProducts();
+        }
+        
+        private void FilterProducts()
+        {
+            var filtered = string.IsNullOrWhiteSpace(SearchText)
+                ? _allProducts
+                : _allProducts.Where(p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            AvailableProducts.Clear();
+            foreach (var p in filtered) AvailableProducts.Add(p);
         }
 
         partial void OnGroceryListChanged(GroceryList value)
