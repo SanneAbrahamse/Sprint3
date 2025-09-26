@@ -14,7 +14,7 @@
 		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
         <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
-        
+
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Grocery.App</RootNamespace>
 		<UseMaui>true</UseMaui>
