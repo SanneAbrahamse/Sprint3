@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Grocery.App.Views;
 using Grocery.Core.Interfaces.Services;
 using Grocery.Core.Models;
 using Grocery.Core.Services;
@@ -11,7 +12,6 @@ public partial class RegisterViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
     private readonly GlobalViewModel _global;
-    private readonly SecureStorageService _secureStorage;
 
     [ObservableProperty] private string name;
 
@@ -23,12 +23,11 @@ public partial class RegisterViewModel : BaseViewModel
 
     [ObservableProperty] private string registerMessage;
 
-    public RegisterViewModel(IAuthService authService, GlobalViewModel global, SecureStorageService secureStorage)
+    public RegisterViewModel(IAuthService authService, GlobalViewModel global)
     {
         //_authService = App.Services.GetServices<IAuthService>().FirstOrDefault();
         _authService = authService;
         _global = global;
-        _secureStorage = secureStorage;
     }
 
     [RelayCommand]
@@ -36,10 +35,6 @@ public partial class RegisterViewModel : BaseViewModel
     {
         try
         {
-            Console.WriteLine("=== REGISTER START ===");
-            Console.WriteLine($"Name: {Name}");
-            Console.WriteLine($"Email: {Email}");
-
             if (Password != ConfirmPassword)
             {
                 RegisterMessage = "Wachtwoorden komen niet overeen.";
@@ -52,33 +47,24 @@ public partial class RegisterViewModel : BaseViewModel
                 emailAddress: Email,
                 password: Password
             );
-
-            Console.WriteLine("About to call _authService.Register");
             bool success = _authService.Register(newClient);
-            Console.WriteLine($"Register success: {success}");
-
             if (success)
             {
-                Console.WriteLine("Entering success block");
-                RegisterMessage = $"Account succesvol aangemaakt! Welkom {Name}";
-                Console.WriteLine("RegisterMessage set");
-
-                // SecureStorage tijdelijk overslaan vanwege macOS entitlement issue
-                try 
-                {
-                    Console.WriteLine("About to save login");
-                    await _secureStorage.SaveLoginAsync(Email, Password);
-                    Console.WriteLine("Login saved");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"SecureStorage failed (but continuing): {ex.Message}");
-                }
+                Device.BeginInvokeOnMainThread(() => 
+                { 
+                    Application.Current.MainPage = 
+                        new LoginView(new LoginViewModel(_authService, _global)
+                        {
+                             LoginMessage = $"Account succesvol aangemaakt! Je kunt nu inloggen.",
+                             Email = newClient.EmailAddress,
+                             Password = Password
+                        }
+                        ); 
+                });
                 
-                Console.WriteLine("About to test login");
+                /* //Automatisch inloggen:
                 var testLogin = _authService.Login(Email, Password);
-                Console.WriteLine($"Login test result: {(testLogin != null ? "SUCCESS" : "FAILED")}");
-
+                
                 if (testLogin != null)
                 {
                     Console.WriteLine($"Logged in user: {testLogin.Name}");
@@ -89,14 +75,13 @@ public partial class RegisterViewModel : BaseViewModel
                     Console.WriteLine("Login failed, using new client object");
                     _global.Client = new Client(0, Name, Email, Password);
                 }
-
-                Console.WriteLine("About to navigate to AppShell");
                 Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage = new AppShell(); });
-                Console.WriteLine("Navigation completed");
+                //Einde automatisch inloggen
+                */
             }
             else
             {
-                RegisterMessage = "Registratie mislukt. Misschien bestaat het account al?";
+                RegisterMessage = "Registratie mislukt.";
             }
         }
         catch (Exception ex)

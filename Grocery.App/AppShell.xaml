@@ -4,9 +4,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Grocery.App.Views"
+    xmlns:viewModels="clr-namespace:Grocery.App.ViewModels"
     Shell.FlyoutBehavior="Disabled"
     Title="GroceryApp">
-
+                
     <TabBar>
         <Tab Title="Home" Icon="grocerylist.png">
             <ShellContent Title="Boodschappenlijsten" ContentTemplate="{DataTemplate local:GroceryListsView}" />

@@ -13,7 +13,7 @@
         <Label Text="{Binding LoginMessage}" TextColor="Red" />
         
         <Button Text="Register"
-                Clicked="RegisterButton_Clicked"
+                Command="{Binding Path=OpenRegistrationPageCommand}"
                 BackgroundColor="Transparent"
                 TextColor="Blue"/>
     </StackLayout>

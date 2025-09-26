@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Input;
 using Grocery.App.ViewModels;
 using Grocery.Core.Interfaces.Services;
 
@@ -9,12 +10,5 @@ public partial class LoginView : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = viewModel;
-	}
-	
-	private async void RegisterButton_Clicked(object sender, EventArgs e)
-	{
-		var app = (App)Application.Current;
-		var registerViewModel = new RegisterViewModel(app.AuthService, app.Global, app.SecureStorage);
-		await Navigation.PushAsync(new RegisterView(registerViewModel));
 	}
 }

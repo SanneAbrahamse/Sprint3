@@ -22,7 +22,7 @@ namespace Grocery.App
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
+            
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
@@ -44,6 +44,7 @@ namespace Grocery.App
             builder.Services.AddTransient<ProductView>().AddTransient<ProductViewModel>();
             builder.Services.AddTransient<ChangeColorView>().AddTransient<ChangeColorViewModel>();
             builder.Services.AddTransient<LoginView>().AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<RegisterView>().AddTransient<RegisterViewModel>();
             return builder.Build();
         }
     }

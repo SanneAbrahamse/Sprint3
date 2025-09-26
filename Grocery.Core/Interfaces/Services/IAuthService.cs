@@ -6,5 +6,7 @@ namespace Grocery.Core.Interfaces.Services
     public interface IAuthService
     {
         Client? Login(string email, string password);
+        
+        bool Register(Client client);
     }
 }
