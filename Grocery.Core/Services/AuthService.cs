@@ -17,25 +17,6 @@ namespace Grocery.Core.Services
             if (client == null) return null;
             if (PasswordHelper.VerifyPassword(password, client.Password)) return client;
             return null;
-            
-        }
-        
-        public bool Register(Client client)
-        {
-            Console.WriteLine($"AuthService.Register called for: {client.EmailAddress}");
-    
-            if (_clientService.Get(client.EmailAddress) != null)
-            {
-                Console.WriteLine("Client already exists");
-                return false;
-            }
-    
-            Console.WriteLine("Hashing password");
-            client.Password = PasswordHelper.HashPassword(client.Password);
-            Console.WriteLine("Adding client to service");
-            _clientService.Add(client);
-            Console.WriteLine("Client added successfully");
-            return true;
         }
     }
 }
